@@ -8,7 +8,7 @@ interface ExerciseInfo {
   average: number;
 }
 
-const calculateExercises = (
+export const calculateExercises = (
   targetHours: number,
   dailyExercise: Array<number>
 ): ExerciseInfo => {
@@ -40,9 +40,10 @@ const calculateExercises = (
   };
 };
 
-const targetHours = Number(process.argv[2]);
+/* const targetHours = Number(process.argv[2]);
 const dailyExercise: Array<number> = process.argv
   .slice(3)
   .map((n) => Number(n));
 
 console.log(calculateExercises(targetHours, dailyExercise));
+ */

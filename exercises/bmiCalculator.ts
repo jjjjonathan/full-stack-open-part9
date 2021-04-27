@@ -1,4 +1,4 @@
-const calculateBmi = (a: number, b: number) => {
+export const calculateBmi = (a: number, b: number) => {
   const bmi = (b / a / a) * 10000;
   if (bmi < 18.5) {
     return 'Underweight';
@@ -16,5 +16,3 @@ const weight = Number(process.argv[3]);
 
 console.log(calculateBmi(height, weight));
 // height in cm, weight in kg
-
-export default calculateBmi;

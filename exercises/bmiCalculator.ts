@@ -16,3 +16,5 @@ const weight: number = Number(process.argv[3]);
 
 console.log(calculateBmi(height, weight));
 // height in cm, weight in kg
+
+export default calculateBmi;

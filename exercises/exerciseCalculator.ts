@@ -9,8 +9,8 @@ interface ExerciseInfo {
 }
 
 const calculateExercises = (
-  dailyExercise: Array<number>,
-  targetHours: number
+  targetHours: number,
+  dailyExercise: Array<number>
 ): ExerciseInfo => {
   const average = dailyExercise.reduce((a, b) => a + b) / dailyExercise.length;
   const ratingDescriptions = [
@@ -40,4 +40,9 @@ const calculateExercises = (
   };
 };
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+const targetHours: number = Number(process.argv[2]);
+const dailyExercise: Array<number> = process.argv
+  .slice(3)
+  .map((n) => Number(n));
+
+console.log(calculateExercises(targetHours, dailyExercise));

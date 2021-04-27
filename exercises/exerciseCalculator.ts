@@ -40,7 +40,7 @@ const calculateExercises = (
   };
 };
 
-const targetHours: number = Number(process.argv[2]);
+const targetHours = Number(process.argv[2]);
 const dailyExercise: Array<number> = process.argv
   .slice(3)
   .map((n) => Number(n));

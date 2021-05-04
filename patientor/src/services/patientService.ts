@@ -7,8 +7,9 @@ const getEntries = (): Array<Patient> => {
   return patients;
 };
 
-const addEntry = () => {
-  return null;
+const addEntry = (entry: Patient) => {
+  patients.push(entry);
+  return patients;
 };
 
 const getSafeEntries = (): Omit<Patient, 'ssn'>[] => {

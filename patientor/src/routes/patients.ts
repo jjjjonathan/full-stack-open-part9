@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import express from 'express';
 import { v4 as uuid } from 'uuid';
 import patientService from '../services/patientService';
+import { Patient } from '../types';
 
 const router = express.Router();
 
@@ -10,10 +10,10 @@ router.get('/', (_request, response) => {
 });
 
 router.post('/', (request, response) => {
-  const body = request.body;
-  const newPatient = {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const body: Omit<Patient, 'id'> = request.body;
+  const newPatient: Patient = {
     ...body,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     id: uuid(),
   };
 

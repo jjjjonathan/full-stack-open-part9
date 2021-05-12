@@ -14,12 +14,7 @@ router.get('/:id', (request, response) => {
   const patient = allPatients.find(
     (patient) => request.params.id === patient.id
   );
-  const patientWithEntries = {
-    ...patient,
-    entries: [],
-  };
-
-  response.send(patientWithEntries);
+  response.send(patient);
 });
 
 router.post('/', (request, response) => {

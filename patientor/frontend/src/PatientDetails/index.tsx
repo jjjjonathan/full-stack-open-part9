@@ -8,7 +8,7 @@ import { useStateValue, setPatientDetails } from '../state';
 import { Divider } from 'semantic-ui-react';
 
 const PatientDetails = () => {
-  const [{ patients }, dispatch] = useStateValue();
+  const [{ patients, diagnoses }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
 
   const patient = patients[id];
@@ -31,6 +31,11 @@ const PatientDetails = () => {
 
   if (!patient) return null;
 
+  const getDiagnosisName = (code: string) => {
+    const diagnosis = diagnoses.find((diagnosis) => diagnosis.code === code);
+    if (diagnosis) return diagnosis.name;
+  };
+
   return (
     <div className="App">
       <h2>{patient.name}</h2>
@@ -49,7 +54,9 @@ const PatientDetails = () => {
           <p>{entry.description}</p>
           <ul>
             {entry.diagnosisCodes?.map((code) => (
-              <li key={code}>{code}</li>
+              <li key={code}>
+                {code}: {getDiagnosisName(code)}
+              </li>
             ))}
           </ul>
           <Divider />

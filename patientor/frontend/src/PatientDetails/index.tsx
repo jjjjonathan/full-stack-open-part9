@@ -5,6 +5,7 @@ import { Patient } from '../types';
 import { apiBaseUrl } from '../constants';
 import { useParams } from 'react-router-dom';
 import { useStateValue, setPatientDetails } from '../state';
+import { Divider } from 'semantic-ui-react';
 
 const PatientDetails = () => {
   const [{ patients }, dispatch] = useStateValue();
@@ -40,6 +41,20 @@ const PatientDetails = () => {
         <br />
         occupation: {patient.occupation}
       </p>
+      <h3>entries</h3>
+      <Divider />
+      {patient.entries.map((entry) => (
+        <div key={entry.id}>
+          <h4>{entry.date}</h4>
+          <p>{entry.description}</p>
+          <ul>
+            {entry.diagnosisCodes?.map((code) => (
+              <li key={code}>{code}</li>
+            ))}
+          </ul>
+          <Divider />
+        </div>
+      ))}
     </div>
   );
 };

@@ -36,6 +36,19 @@ const PatientDetails = () => {
     if (diagnosis) return diagnosis.name;
   };
 
+  const getTypeName = (type: string) => {
+    switch (type) {
+      case 'HealthCheck':
+        return 'Health Check';
+      case 'OccupationalHealthcare':
+        return 'Occupational Healthcare';
+      case 'Hospital':
+        return 'Hospital';
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="App">
       <h2>{patient.name}</h2>
@@ -51,6 +64,7 @@ const PatientDetails = () => {
       {patient.entries.map((entry) => (
         <div key={entry.id}>
           <h4>{entry.date}</h4>
+          <h5>Type: {getTypeName(entry.type)}</h5>
           <p>{entry.description}</p>
           <ul>
             {entry.diagnosisCodes?.map((code) => (

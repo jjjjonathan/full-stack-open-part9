@@ -1,8 +1,9 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import React from 'react';
 import { Button, Divider } from 'semantic-ui-react';
-import { DiagnosisSelection } from '../AddPatientModal/FormField';
+import { DiagnosisSelection, NumberField } from '../AddPatientModal/FormField';
 import { useStateValue } from '../state';
+import { HealthCheckEntry } from '../types';
 
 export interface HospitalValues {
   date: string;
@@ -23,12 +24,19 @@ export interface OccupationalValues {
   sickLeaveEnd: string;
 }
 
+export type HealthCheckValues = Omit<HealthCheckEntry, 'id' | 'type'>;
+
 interface Props {
   onHospitalSubmit: (values: HospitalValues) => void;
   onOccupationalSubmit: (values: OccupationalValues) => void;
+  onHealthCheckSubmit: (values: HealthCheckValues) => void;
 }
 
-const AddEntryForm = ({ onHospitalSubmit, onOccupationalSubmit }: Props) => {
+const AddEntryForm = ({
+  onHospitalSubmit,
+  onOccupationalSubmit,
+  onHealthCheckSubmit,
+}: Props) => {
   const [{ diagnoses }] = useStateValue();
   return (
     <div>
@@ -151,6 +159,57 @@ const AddEntryForm = ({ onHospitalSubmit, onOccupationalSubmit }: Props) => {
         }}
       </Formik>
       <Divider />
+      <Formik
+        initialValues={{
+          date: '',
+          description: '',
+          specialist: '',
+          diagnosisCodes: [],
+          healthCheckRating: 0,
+        }}
+        onSubmit={onHealthCheckSubmit}
+        validate={(values) => {
+          const requiredError = 'Field is required';
+          const errors: { [field: string]: string } = {};
+          if (!values.date) {
+            errors.date = requiredError;
+          }
+          return errors;
+        }}
+      >
+        {({ setFieldValue, setFieldTouched }) => {
+          return (
+            <Form className="form ui">
+              Type: Occupational Healthcare
+              <Field label="Date" placeholder="Date" name="date" />
+              <ErrorMessage name="date" />
+              <Field
+                label="Description"
+                placeholder="Description"
+                name="description"
+              />
+              <Field
+                label="specialist"
+                placeholder="specialist"
+                name="specialist"
+              />
+              <DiagnosisSelection
+                setFieldValue={setFieldValue}
+                setFieldTouched={setFieldTouched}
+                diagnoses={Object.values(diagnoses)}
+              />
+              <Field
+                label="healthCheckRating"
+                name="healthCheckRating"
+                component={NumberField}
+                min={0}
+                max={3}
+              />
+              <Button type="submit">Submit</Button>
+            </Form>
+          );
+        }}
+      </Formik>
     </div>
   );
 };

@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 import { useStateValue, setPatientDetails, addEntry } from '../state';
 import { Divider } from 'semantic-ui-react';
 import AddEntryForm, {
+  HealthCheckValues,
   HospitalValues,
   OccupationalValues,
 } from '../AddEntryForm';
@@ -72,7 +73,7 @@ const PatientDetails = () => {
         criteria: dischargecriteria,
       },
     };
-    console.log(newEntry);
+
     try {
       const { data } = await axios.post<Entry>(
         `${apiBaseUrl}/patients/${id}/entries`,
@@ -105,7 +106,7 @@ const PatientDetails = () => {
         endDate: sickLeaveEnd,
       },
     };
-    console.log(newEntry);
+
     try {
       const { data } = await axios.post<Entry>(
         `${apiBaseUrl}/patients/${id}/entries`,
@@ -115,6 +116,41 @@ const PatientDetails = () => {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleHealthCheckSubmitEntry = async (values: HealthCheckValues) => {
+    const newEntry: EntryWithoutId = {
+      type: 'HealthCheck',
+      ...values,
+    };
+    try {
+      const { data } = await axios.post<Entry>(
+        `${apiBaseUrl}/patients/${id}/entries`,
+        newEntry
+      );
+      dispatch(addEntry({ entry: data, id }));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const renderEntries = (entries: Entry[]) => {
+    if (!entries) return null;
+    return entries.map((entry) => (
+      <div key={entry.id}>
+        <h4>{entry.date}</h4>
+        <h5>Type: {getTypeName(entry.type)}</h5>
+        <p>{entry.description}</p>
+        <ul>
+          {entry.diagnosisCodes?.map((code) => (
+            <li key={code}>
+              {code}: {getDiagnosisName(code)}
+            </li>
+          ))}
+        </ul>
+        <Divider />
+      </div>
+    ));
   };
 
   return (
@@ -129,24 +165,11 @@ const PatientDetails = () => {
       </p>
       <h3>entries</h3>
       <Divider />
-      {patient.entries.map((entry) => (
-        <div key={entry.id}>
-          <h4>{entry.date}</h4>
-          <h5>Type: {getTypeName(entry.type)}</h5>
-          <p>{entry.description}</p>
-          <ul>
-            {entry.diagnosisCodes?.map((code) => (
-              <li key={code}>
-                {code}: {getDiagnosisName(code)}
-              </li>
-            ))}
-          </ul>
-          <Divider />
-        </div>
-      ))}
+      {renderEntries(patient.entries)}
       <AddEntryForm
         onHospitalSubmit={handleAddHospitalEntry}
         onOccupationalSubmit={handleOccupationalSubmitEntry}
+        onHealthCheckSubmit={handleHealthCheckSubmitEntry}
       />
     </div>
   );

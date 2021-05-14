@@ -6,7 +6,10 @@ import { apiBaseUrl } from '../constants';
 import { useParams } from 'react-router-dom';
 import { useStateValue, setPatientDetails, addEntry } from '../state';
 import { Divider } from 'semantic-ui-react';
-import AddEntryForm, { Values } from '../AddEntryForm';
+import AddEntryForm, {
+  HospitalValues,
+  OccupationalValues,
+} from '../AddEntryForm';
 
 const PatientDetails = () => {
   const [{ patients, diagnoses }, dispatch] = useStateValue();
@@ -50,14 +53,14 @@ const PatientDetails = () => {
     }
   };
 
-  const handleAddEntry = async ({
+  const handleAddHospitalEntry = async ({
     date,
     description,
     diagnosisCodes,
     specialist,
     dischargecriteria,
     dischargedate,
-  }: Values) => {
+  }: HospitalValues) => {
     const newEntry: EntryWithoutId = {
       type: 'Hospital',
       date,
@@ -67,6 +70,39 @@ const PatientDetails = () => {
       discharge: {
         date: dischargedate,
         criteria: dischargecriteria,
+      },
+    };
+    console.log(newEntry);
+    try {
+      const { data } = await axios.post<Entry>(
+        `${apiBaseUrl}/patients/${id}/entries`,
+        newEntry
+      );
+      dispatch(addEntry({ entry: data, id }));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleOccupationalSubmitEntry = async ({
+    date,
+    description,
+    diagnosisCodes,
+    specialist,
+    employerName,
+    sickLeaveStart,
+    sickLeaveEnd,
+  }: OccupationalValues) => {
+    const newEntry: EntryWithoutId = {
+      type: 'OccupationalHealthcare',
+      date,
+      description,
+      diagnosisCodes,
+      specialist,
+      employerName,
+      sickLeave: {
+        startDate: sickLeaveStart,
+        endDate: sickLeaveEnd,
       },
     };
     console.log(newEntry);
@@ -108,7 +144,10 @@ const PatientDetails = () => {
           <Divider />
         </div>
       ))}
-      <AddEntryForm onSubmit={handleAddEntry} />
+      <AddEntryForm
+        onHospitalSubmit={handleAddHospitalEntry}
+        onOccupationalSubmit={handleOccupationalSubmitEntry}
+      />
     </div>
   );
 };

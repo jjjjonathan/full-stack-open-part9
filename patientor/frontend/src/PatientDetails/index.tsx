@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
 
-import { Patient } from '../types';
+import { Entry, EntryWithoutId, Patient } from '../types';
 import { apiBaseUrl } from '../constants';
 import { useParams } from 'react-router-dom';
-import { useStateValue, setPatientDetails } from '../state';
+import { useStateValue, setPatientDetails, addEntry } from '../state';
 import { Divider } from 'semantic-ui-react';
+import AddEntryForm, { Values } from '../AddEntryForm';
 
 const PatientDetails = () => {
   const [{ patients, diagnoses }, dispatch] = useStateValue();
@@ -49,6 +50,37 @@ const PatientDetails = () => {
     }
   };
 
+  const handleAddEntry = async ({
+    date,
+    description,
+    diagnosisCodes,
+    specialist,
+    dischargecriteria,
+    dischargedate,
+  }: Values) => {
+    const newEntry: EntryWithoutId = {
+      type: 'Hospital',
+      date,
+      description,
+      diagnosisCodes,
+      specialist,
+      discharge: {
+        date: dischargedate,
+        criteria: dischargecriteria,
+      },
+    };
+    console.log(newEntry);
+    try {
+      const { data } = await axios.post<Entry>(
+        `${apiBaseUrl}/patients/${id}/entries`,
+        newEntry
+      );
+      dispatch(addEntry({ entry: data, id }));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="App">
       <h2>{patient.name}</h2>
@@ -76,6 +108,7 @@ const PatientDetails = () => {
           <Divider />
         </div>
       ))}
+      <AddEntryForm onSubmit={handleAddEntry} />
     </div>
   );
 };

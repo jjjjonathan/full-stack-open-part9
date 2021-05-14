@@ -1,4 +1,4 @@
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 import React from 'react';
 import { Button } from 'semantic-ui-react';
 import { DiagnosisSelection } from '../AddPatientModal/FormField';
@@ -32,12 +32,21 @@ const AddEntryForm = ({ onSubmit }: Props) => {
           diagnosisCodes: [],
         }}
         onSubmit={onSubmit}
+        validate={(values) => {
+          const requiredError = 'Field is required';
+          const errors: { [field: string]: string } = {};
+          if (!values.date) {
+            errors.date = requiredError;
+          }
+          return errors;
+        }}
       >
         {({ setFieldValue, setFieldTouched }) => {
           return (
             <Form className="form ui">
               type: hostpial
               <Field label="Date" placeholder="Date" name="date" />
+              <ErrorMessage name="date" />
               <Field
                 label="Description"
                 placeholder="Description"
